@@ -1,26 +1,18 @@
-class Solution(object):
-    def minPathSum(self, grid):
-        """
-        :type grid: List[List[int]]
-        :rtype: int
-        """
+from functools import cache
+class Solution:
+    def minPathSum(self, grid: list[list[int]]) -> int:
         
-        rows = len(grid)
-        cols = len(grid[0])
-        
-        for i in range(rows):
-            for j in range(cols):
-                
-                if i == 0 and j == 0:
-                    continue
-                
-                if i == 0:
-                    grid[i][j] = grid[i][j] + grid[i][j - 1]
-                
-                elif j == 0:
-                    grid[i][j] = grid[i][j] + grid[i - 1][j]
-                
-                else:
-                    grid[i][j] = grid[i][j] + min(grid[i - 1][j], grid[i][j - 1])
-        
-        return grid[rows - 1][cols - 1]
+        m = len(grid)
+        n = len(grid[0])
+
+        @cache
+        def solve(i, j):
+            if i == 0 and j == 0:
+                return grid[0][0]
+
+            if i < 0 or j < 0:
+                return float('inf')
+
+            return grid[i][j] + min(solve(i - 1, j), solve(i, j - 1))
+
+        return solve(m - 1, n - 1)
